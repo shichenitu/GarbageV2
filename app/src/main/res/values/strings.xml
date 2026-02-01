@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Garbage Sorting</string>
+    <string name="list_label">Garbage Sorting</string>
+    <string name="list_button_label">Show Sorting List</string>
+</resources>
