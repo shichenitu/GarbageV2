@@ -30,7 +30,6 @@ fun GarbageSortingScreen(modifier: Modifier = Modifier) {
     ) {
         var showSortingList: Boolean by rememberSaveable { mutableStateOf(value = false) }
         var garbageName by rememberSaveable { mutableStateOf("") }
-
         val sortingList: List<String> = listOf(
             "Newspaper should be placed in: Paper",
             "Magazine should be placed in: Paper",
@@ -39,7 +38,25 @@ fun GarbageSortingScreen(modifier: Modifier = Modifier) {
             "Can should be placed in: Metal"
         )
 
-        if (showSortingList) {
+        if (!showSortingList) {
+            TextField(
+                value = garbageName,
+                onValueChange = { garbageName = it },
+                label = { Text(text = stringResource(id = R.string.garbage_item_label)) }
+            )
+
+            Button(onClick = { /* TODO: Search Feature */ }) {
+                Text(text = stringResource(id = R.string.where_label))
+            }
+
+            Button(onClick = { showSortingList = true }) {
+                Text(text = stringResource(id = R.string.show_sorting_list_label))
+            }
+        } else {
+            Button(onClick = { showSortingList = false }) {
+                Text(text = stringResource(id = R.string.search_item_label))
+            }
+
             Column(modifier = Modifier.padding(vertical = 16.dp)) {
                 Text(text = stringResource(id = R.string.list_label), style = typography.titleLarge)
                 sortingList.forEach { item ->
@@ -47,21 +64,6 @@ fun GarbageSortingScreen(modifier: Modifier = Modifier) {
                 }
             }
         }
-
-        TextField(
-            value = garbageName,
-            onValueChange = { garbageName = it },
-            label = { Text(text = stringResource(id = R.string.garbage_item_label)) }
-        )
-
-        Button(onClick = { showSortingList = true }) {
-            Text(text = stringResource(id = R.string.where_label))
-        }
-
-        Button(onClick = { showSortingList = true }) {
-            Text(text = stringResource(id = R.string.list_button_label))
-        }
-
     }
 }
 
