@@ -37,7 +37,6 @@ import dk.chen.garbagev1.domain.fullDescription
 @Composable
 fun GarbageSortingScreen(
     modifier: Modifier = Modifier,
-    snackbarHostState: SnackbarHostState,
     viewModel: GarbageSortingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
