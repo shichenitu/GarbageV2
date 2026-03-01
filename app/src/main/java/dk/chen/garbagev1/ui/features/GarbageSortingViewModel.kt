@@ -1,9 +1,11 @@
 package dk.chen.garbagev1.ui.features
 
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dk.chen.garbagev1.R
 import dk.chen.garbagev1.domain.Item
 import dk.chen.garbagev1.domain.ItemRepository
@@ -14,17 +16,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
 
 @HiltViewModel
 class GarbageSortingViewModel @Inject constructor (
-    itemRepository: ItemRepository,
-    snackBarHandler: SnackBarHandler
+    private val itemRepository: ItemRepository,
+    private val snackBarHandler: SnackBarHandler,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val sortingListVisibility: MutableStateFlow<Boolean> = MutableStateFlow(value = false)
     private val sortingList: StateFlow<List<Item>> =
-        itemRepository.showSortingList()
+        itemRepository.getSortingList()
             .stateIn(
                 scope = viewModelScope,
                 started = WhileSubscribed(stopTimeoutMillis = 5000),
@@ -64,28 +68,27 @@ class GarbageSortingViewModel @Inject constructor (
 
         override fun onSearchClick(itemWhat: String) {
             if (itemWhat.isNotBlank()) {
-                val foundItem = itemRepository.findItem(itemWhat)
+                val foundItem = sortingList.value.find { it.what.equals(itemWhat, ignoreCase = true) }
                 if (foundItem != null) {
-                    itemWhere.update { "${foundItem.what} should be placed in: ${foundItem.where}" }
+                    itemWhere.update { "${itemWhat} should be placed in: ${foundItem.where}" }
                 } else {
                     itemWhere.update { "${itemWhat} not found" }
                 }
             } else {
-                snackBarHandler.postMessage(msgRes = R.string.textfield_error_message)
+                snackBarHandler.postMessage(msg = context.getString(R.string.textfield_error_message))
             }
         }
 
         override fun onRemoveItemClick(item: Item) {
             itemRepository.removeItem(item)
             snackBarHandler.postMessage(
-                msgRes = R.string.item_removed_label,
-                item.what,
-                item.where,
-                actionLabelRes = R.string.undo_label,
-                onDismiss = { },
+                msg = context.getString(R.string.item_removed_label, item.what, item.where),
+                actionLabel = context.getString(R.string.undo_label),
                 onActionClick = {
-                    itemRepository.addItem(item)
-                    snackBarHandler.postMessage(msgRes = R.string.undo_confirmation_message)
+                    viewModelScope.launch {
+                        itemRepository.addItem(item)
+                        snackBarHandler.postMessage(msg = context.getString(R.string.undo_confirmation_message))
+                    }
                 }
             )
         }
