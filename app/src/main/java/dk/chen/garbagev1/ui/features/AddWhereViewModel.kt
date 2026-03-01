@@ -39,7 +39,7 @@ class AddWhereViewModel @Inject constructor(
             if (what.isNotBlank() && uiState.value.where.isNotBlank()) {
                 itemRepository.addItem(Item(what = what, where = uiState.value.where))
                 viewModelScope.launch {
-                    _navigationEvents.emit(value = NavigationEvent.NavigateToShoppingList)
+                    _navigationEvents.emit(value = NavigationEvent.NavigateToGarbageList)
                 }
             } else {
                 _uiState.update { it.copy(isError = true) }
@@ -55,7 +55,7 @@ class AddWhereViewModel @Inject constructor(
         override fun onCancelClick() {
             // TODO("Not yet implemented")
             viewModelScope.launch {
-                _navigationEvents.emit(value = NavigationEvent.NavigateToShoppingList)
+                _navigationEvents.emit(value = NavigationEvent.NavigateToGarbageList)
             }
         }
     }
@@ -75,6 +75,6 @@ class AddWhereViewModel @Inject constructor(
 
     sealed class NavigationEvent {
         data object CloseDialog : NavigationEvent()
-        data object NavigateToShoppingList : NavigationEvent()
+        data object NavigateToGarbageList : NavigationEvent()
     }
 }
