@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,12 +35,22 @@ import dk.chen.garbagev1.domain.fullDescription
 
 @Composable
 fun GarbageSortingScreen(
+    onNavigate: (GarbageSortingViewModel.NavigationEvent) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: GarbageSortingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    GarbageSortingScreen(modifier, uiState, viewModel.uiEvents)
+    LaunchedEffect(key1 = Unit) {
+        viewModel.navigationEvents.collect { event ->
+            onNavigate(event)
+        }
+    }
+
+    GarbageSortingScreen(
+        modifier = modifier,
+        uiState = uiState,
+        uiEvents = viewModel.uiEvents)
 }
 
 @Composable
@@ -107,7 +118,7 @@ private fun GarbageSortingScreen(
                     Text(text = stringResource(id = R.string.where_label))
                 }
                 Button(onClick = uiEvents::onToggleListVisibilityClick) {
-                    Text(text = stringResource(id = uiState.toggleListVisibilityButtonLabel))
+                    Text(text = "Show sorting list")
                 }
             }
         }

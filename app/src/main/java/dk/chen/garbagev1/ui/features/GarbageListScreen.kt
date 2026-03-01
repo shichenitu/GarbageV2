@@ -38,6 +38,9 @@ import kotlinx.serialization.Serializable
 object GarbageGraph
 
 @Serializable
+object GarbageSearch
+
+@Serializable
 object GarbageList
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,11 +91,12 @@ private fun GarbageListScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Button(onClick = uiEvents::onAddItemClick) {
+                    Text(text = "Add item")
+                }
+
                 Column(modifier = Modifier.padding(vertical = 16.dp)) {
-                    Text(
-                        text = "Garbage Sorting",
-                        style = MaterialTheme.typography.titleLarge
-                    )
+
                     uiState.garbageList.forEach { item ->
                         Row(
                             modifier = Modifier
@@ -110,10 +114,6 @@ private fun GarbageListScreen(
                             }
                         }
                     }
-                }
-
-                Button(onClick = uiEvents::onAddItemClick) {
-                    Text(text = "Add item")
                 }
             }
         }

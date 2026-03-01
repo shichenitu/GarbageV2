@@ -12,6 +12,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
+import androidx.navigation.toRoute
 import dk.chen.garbagev1.ui.features.AddWhat
 import dk.chen.garbagev1.ui.features.AddWhatScreen
 import dk.chen.garbagev1.ui.features.AddWhatViewModel
@@ -25,6 +26,9 @@ import dk.chen.garbagev1.ui.features.GarbageGraph
 import dk.chen.garbagev1.ui.features.GarbageList
 import dk.chen.garbagev1.ui.features.GarbageListScreen
 import dk.chen.garbagev1.ui.features.GarbageListViewModel
+import dk.chen.garbagev1.ui.features.GarbageSearch
+import dk.chen.garbagev1.ui.features.GarbageSortingScreen
+import dk.chen.garbagev1.ui.features.GarbageSortingViewModel
 
 @Composable
 fun MainNavigation(modifier: Modifier = Modifier) {
@@ -38,7 +42,18 @@ fun MainNavigation(modifier: Modifier = Modifier) {
         navController = navController,
         startDestination = GarbageGraph
     ) {
-        navigation<GarbageGraph>(startDestination = GarbageList) {
+        navigation<GarbageGraph>(startDestination = GarbageSearch) {
+            composable<GarbageSearch> {
+                GarbageSortingScreen(
+                    onNavigate = { event ->
+                        when (event) {
+                            is GarbageSortingViewModel.NavigationEvent.NavigateToList ->
+                                navController.navigate(GarbageList, singleTopNavOptions)
+                        }
+                    }
+                )
+            }
+
             composable<GarbageList> {
                 GarbageListScreen(
                     onNavigate = { event ->
@@ -90,7 +105,7 @@ fun MainNavigation(modifier: Modifier = Modifier) {
                 }
             ) {
                 DetailsScreen(
-                    onNavigate = { event ->
+                    onNavigate = { event: DetailsViewModel.NavigationEvent ->
                         when (event) {
                             is DetailsViewModel.NavigationEvent.NavigateUp -> {
                                 // TODO add back button logic
@@ -145,7 +160,7 @@ fun MainNavigation(modifier: Modifier = Modifier) {
         }
         dialog<AddWhere> {
             AddWhereScreen(
-                onNavigate = { event ->
+                onNavigate = { event: AddWhereViewModel.NavigationEvent ->
                     when (event) {
                         is AddWhereViewModel.NavigationEvent.CloseDialog -> navController.popBackStack()
                         is AddWhereViewModel.NavigationEvent.NavigateToGarbageList -> navController.popBackStack(

@@ -10,9 +10,11 @@ import dk.chen.garbagev1.R
 import dk.chen.garbagev1.domain.Item
 import dk.chen.garbagev1.domain.ItemRepository
 import dk.chen.garbagev1.ui.components.SnackBarHandler
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -26,6 +28,13 @@ class GarbageSortingViewModel @Inject constructor (
     private val snackBarHandler: SnackBarHandler,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
+    sealed class NavigationEvent {
+        object NavigateToList : NavigationEvent()
+    }
+
+    private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
+    val navigationEvents = _navigationEvents.asSharedFlow()
+
     private val sortingListVisibility: MutableStateFlow<Boolean> = MutableStateFlow(value = false)
     private val sortingList: StateFlow<List<Item>> =
         itemRepository.getSortingList()
@@ -94,7 +103,9 @@ class GarbageSortingViewModel @Inject constructor (
         }
 
         override fun onToggleListVisibilityClick() {
-            sortingListVisibility.update { !it }
+            viewModelScope.launch {
+                _navigationEvents.emit(NavigationEvent.NavigateToList)
+            }
         }
     }
 
