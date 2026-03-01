@@ -28,16 +28,16 @@ class ItemRepositoryImpl @Inject constructor(@ApplicationContext private val con
         }
     }
 
-    override fun showSortingList(): Flow<List<Item>> {
+    override fun getSortingList(): Flow<List<Item>> {
         return _garbageSorting.map { dtoList ->
             dtoList.sortedByWhereAndWhat().map { it.toItem() }
         }
     }
 
-    override fun findItem(what: String): Item? {
-        return _garbageSorting.value
-            .find { it.what.equals(what, ignoreCase = true) }
-            ?.toItem()
+    override fun getItem(id: String): Flow<Item?> {
+        return _garbageSorting.map { dtoList ->
+            dtoList.find { it.id == id }?.toItem()
+        }
     }
 
     override fun addItem(item: Item) {
@@ -45,7 +45,7 @@ class ItemRepositoryImpl @Inject constructor(@ApplicationContext private val con
             item.copy(what = item.what.toTitleCase(), where = item.where.toTitleCase()).toDto()
 
         _garbageSorting.update { currentList ->
-            if (currentList.contains(formattedItemDto)) {
+            if (currentList.any { it.what == formattedItemDto.what && it.where == formattedItemDto.where }) {
                 currentList
             } else {
                 currentList + formattedItemDto
@@ -53,7 +53,7 @@ class ItemRepositoryImpl @Inject constructor(@ApplicationContext private val con
         }
     }
 
-    override fun populateItems(rawText: String) {
+    fun populateItems(rawText: String) {
         val allLines = rawText.split(Regex("\\r?\\n"))
 
         val newList = allLines
@@ -63,6 +63,7 @@ class ItemRepositoryImpl @Inject constructor(@ApplicationContext private val con
                 if (line.contains(", ")) {
                     val parts = line.split(", ", limit = 2)
                     ItemDto(
+                        id = java.util.UUID.randomUUID().toString(),
                         what = parts[0].trim(),
                         where = parts[1].trim()
                     )
@@ -75,7 +76,19 @@ class ItemRepositoryImpl @Inject constructor(@ApplicationContext private val con
 
     override fun removeItem(item: Item) {
         _garbageSorting.update { currentList ->
-            currentList - item.toDto()
+            currentList.filter { it.id != item.id }
+        }
+    }
+
+    override fun updateItem(item: Item) {
+        _garbageSorting.update { currentList ->
+            currentList.map {
+                if (it.id == item.id) {
+                    item.toDto()
+                } else {
+                    it
+                }
+            }
         }
     }
 
