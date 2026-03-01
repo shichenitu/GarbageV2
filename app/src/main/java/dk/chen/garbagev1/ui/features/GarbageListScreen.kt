@@ -38,6 +38,9 @@ import kotlinx.serialization.Serializable
 object GarbageGraph
 
 @Serializable
+object GarbageSearch
+
+@Serializable
 object GarbageList
 
 @OptIn(ExperimentalMaterial3Api::class)

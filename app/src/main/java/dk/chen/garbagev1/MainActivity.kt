@@ -12,14 +12,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dagger.hilt.android.AndroidEntryPoint
 import dk.chen.garbagev1.ui.components.SnackBarHandler
 import dk.chen.garbagev1.ui.features.GarbageSortingScreen
+import dk.chen.garbagev1.ui.navigation.MainNavigation
 import dk.chen.garbagev1.ui.theme.theme.GarbageV1Theme
 import javax.inject.Inject
 
@@ -51,21 +49,10 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        TopAppBar(
-                            title = {
-                                Text(text = stringResource(id = R.string.app_name))
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = colorScheme.primaryContainer
-                            )
-                        )
-                    },
+
                     snackbarHost = { SnackbarHost(hostState = hostState) }
                 ) { innerPadding ->
-                    GarbageSortingScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    MainNavigation(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
