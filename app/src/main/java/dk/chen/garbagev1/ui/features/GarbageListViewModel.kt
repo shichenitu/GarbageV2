@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.chen.garbagev1.domain.Item
 import dk.chen.garbagev1.domain.ItemRepository
+import dk.chen.garbagev1.ui.features.AddWhatViewModel.NavigationEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,8 +43,13 @@ class GarbageListViewModel @Inject constructor(private val itemRepository: ItemR
 
         override fun onEditItemClick(item: Item) {
             viewModelScope.launch {
-                // TODO add navigation to DetailsScreen logic
                 _navigationEvents.emit(value = NavigationEvent.NavigateToDetails(itemId = item.id))
+            }
+        }
+
+        override fun onUpClick() {
+            viewModelScope.launch {
+                _navigationEvents.emit(value = NavigationEvent.NavigateUp)
             }
         }
     }
@@ -54,10 +60,12 @@ class GarbageListViewModel @Inject constructor(private val itemRepository: ItemR
     interface UiEvents {
         fun onAddItemClick()
         fun onEditItemClick(item: Item)
+        fun onUpClick()
     }
 
     sealed class NavigationEvent {
         data object NavigateToAddWhat : NavigationEvent()
         data class NavigateToDetails(val itemId: String) : NavigationEvent()
+        data object NavigateUp : NavigationEvent()
     }
 }

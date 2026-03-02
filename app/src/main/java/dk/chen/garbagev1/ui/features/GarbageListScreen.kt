@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -76,6 +77,14 @@ private fun GarbageListScreen(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.app_name)) },
+                navigationIcon = {
+                    IconButton(onClick = uiEvents::onUpClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -135,6 +144,7 @@ fun GarbageListScreenPreview() {
             uiEvents = object : GarbageListViewModel.UiEvents {
                 override fun onAddItemClick() {}
                 override fun onEditItemClick(item: Item) {}
+                override fun onUpClick() {}
             },
         )
     }

@@ -12,7 +12,6 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
-import androidx.navigation.toRoute
 import dk.chen.garbagev1.ui.features.AddWhat
 import dk.chen.garbagev1.ui.features.AddWhatScreen
 import dk.chen.garbagev1.ui.features.AddWhatViewModel
@@ -66,6 +65,11 @@ fun MainNavigation(modifier: Modifier = Modifier) {
                             is GarbageListViewModel.NavigationEvent.NavigateToDetails -> navController.navigate (
                                 // TODO add navigation to DetailsScreen logic
                                 route = Details(itemId = event.itemId),
+                                navOptions = singleTopNavOptions
+                            )
+
+                            is GarbageListViewModel.NavigationEvent.NavigateUp -> navController.navigate (
+                                route = GarbageSearch,
                                 navOptions = singleTopNavOptions
                             )
                         }
