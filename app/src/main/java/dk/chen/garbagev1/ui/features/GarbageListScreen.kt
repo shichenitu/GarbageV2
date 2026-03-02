@@ -1,12 +1,12 @@
 package dk.chen.garbagev1.ui.features
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
@@ -91,37 +91,33 @@ private fun GarbageListScreen(
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
-
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
                 Button(onClick = uiEvents::onAddItemClick) {
                     Text(text = "Add item")
                 }
+            }
 
-                Column(modifier = Modifier.padding(vertical = 16.dp)) {
-
-                    uiState.garbageList.forEach { item ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = item.fullDescription())
-                            IconButton(onClick = { uiEvents.onEditItemClick(item) }) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "Edit item"
-                                )
-                            }
-                        }
+            items(uiState.garbageList) { item ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = item.fullDescription())
+                    IconButton(onClick = { uiEvents.onEditItemClick(item) }) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit item"
+                        )
                     }
                 }
             }
