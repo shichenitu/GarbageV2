@@ -168,7 +168,7 @@ fun MainNavigation(modifier: Modifier = Modifier) {
                     when (event) {
                         is AddWhereViewModel.NavigationEvent.CloseDialog -> navController.popBackStack()
                         is AddWhereViewModel.NavigationEvent.NavigateToGarbageList -> navController.popBackStack(
-                            route = GarbageGraph,
+                            route = GarbageSearch,
                             inclusive = false
                         )
                     }
