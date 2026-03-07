@@ -15,7 +15,10 @@
     <string name="bins_screen_title">Recycling</string>
     <string name="settings_screen_title">Settings</string>
     <string name="add_what_title">Add item: What</string>
+    <string name="add_where_title">Add item: Where</string>
     <string name="what_label">What</string>
     <string name="next_button_label">Next</string>
     <string name="bins_near_you_title">Bins near you</string>
+    <string name="done_button_label">Done</string>
+    <string name="cancel_addition_button_label">Cancel addition</string>
 </resources>
