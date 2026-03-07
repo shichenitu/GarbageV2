@@ -25,13 +25,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dk.chen.garbagev1.R
 import dk.chen.garbagev1.domain.Item
 import dk.chen.garbagev1.domain.fullDescription
+import dk.chen.garbagev1.ui.components.ItemOrNullProvider
+import dk.chen.garbagev1.ui.components.ThemedPreviews
+import dk.chen.garbagev1.ui.components.previewGarbageList
 import dk.chen.garbagev1.ui.theme.theme.GarbageV1Theme
 import kotlinx.serialization.Serializable
 
@@ -128,17 +131,14 @@ private fun GarbageListScreen(
     }
 }
 
-@Preview(showBackground = true)
+@ThemedPreviews
 @Composable
-fun GarbageListScreenPreview() {
+fun GarbageListScreenPreview(@PreviewParameter(provider = ItemOrNullProvider::class) itemOrNull: Item?) {
     GarbageV1Theme {
         GarbageListScreen(
             modifier = Modifier,
             uiState = GarbageListViewModel.UiState(
-                garbageList = listOf(
-                    Item(what = "Can", where = "metal"),
-                    Item(what = "Book", where = "paper")
-                )
+                garbageList = previewGarbageList(),
             ),
             uiEvents = object : GarbageListViewModel.UiEvents {
                 override fun onAddItemClick() {}
