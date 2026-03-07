@@ -1,15 +1,15 @@
-package dk.chen.garbagev1.ui.features
+package dk.chen.garbagev1.ui.features.garbage
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -24,38 +25,24 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dk.chen.garbagev1.R
-import dk.chen.garbagev1.domain.Item
-import dk.chen.garbagev1.domain.fullDescription
-import dk.chen.garbagev1.ui.components.ItemOrNullProvider
-import dk.chen.garbagev1.ui.components.ThemedPreviews
-import dk.chen.garbagev1.ui.components.previewGarbageList
 import dk.chen.garbagev1.ui.theme.theme.GarbageV1Theme
 import kotlinx.serialization.Serializable
 
 @Serializable
-object GarbageGraph
+object AddWhat
 
-@Serializable
-object GarbageSearch
-
-@Serializable
-object GarbageList
-
-@Serializable
-object ListGroup
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GarbageListScreen(
-    onNavigate: (GarbageListViewModel.NavigationEvent) -> Unit,
+fun AddWhatScreen(
+    onNavigate: (AddWhatViewModel.NavigationEvent) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: GarbageListViewModel = hiltViewModel(),
+    viewModel: AddWhatViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -65,7 +52,7 @@ fun GarbageListScreen(
         }
     }
 
-    GarbageListScreen(
+    AddWhatScreen(
         modifier = modifier,
         uiState = uiState,
         uiEvents = viewModel.uiEvents
@@ -74,15 +61,15 @@ fun GarbageListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GarbageListScreen(
-    uiState: GarbageListViewModel.UiState,
-    uiEvents: GarbageListViewModel.UiEvents,
+private fun AddWhatScreen(
+    uiState: AddWhatViewModel.UiState,
+    uiEvents: AddWhatViewModel.UiEvents,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.app_name)) },
+                title = { Text(text = "Add item: What") },
                 navigationIcon = {
                     IconButton(onClick = uiEvents::onUpClick) {
                         Icon(
@@ -97,54 +84,48 @@ private fun GarbageListScreen(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
+        Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                Button(onClick = uiEvents::onAddItemClick) {
-                    Text(text = "Add item")
-                }
-            }
+            val focusManager = LocalFocusManager.current
 
-            items(uiState.garbageList) { item ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = item.fullDescription())
-                    IconButton(onClick = { uiEvents.onEditItemClick(item) }) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit item"
-                        )
+            TextField(
+                value = uiState.what,
+                onValueChange = uiEvents::onWhatChange,
+                label = { Text(text = "What") },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
+                isError = uiState.isError,
+                supportingText = {
+                    if (uiState.isError) {
+                        Text(text = "What cannot be empty")
                     }
                 }
+            )
+            Spacer(Modifier.height(height = 16.dp))
+            Button(onClick = uiEvents::onNextClick) {
+                Text(text = "Next")
             }
         }
     }
 }
 
-@ThemedPreviews
+@Preview(showBackground = true)
 @Composable
-fun GarbageListScreenPreview(@PreviewParameter(provider = ItemOrNullProvider::class) itemOrNull: Item?) {
+fun AddWhatScreenPreview() {
     GarbageV1Theme {
-        GarbageListScreen(
+        AddWhatScreen(
             modifier = Modifier,
-            uiState = GarbageListViewModel.UiState(
-                garbageList = previewGarbageList(),
-            ),
-            uiEvents = object : GarbageListViewModel.UiEvents {
-                override fun onAddItemClick() {}
-                override fun onEditItemClick(item: Item) {}
+            uiState = AddWhatViewModel.UiState(what = "Milk"),
+            uiEvents = object : AddWhatViewModel.UiEvents {
+                override fun onWhatChange(what: String) {}
+                override fun onNextClick() {}
                 override fun onUpClick() {}
-            },
+            }
         )
     }
 }
