@@ -33,9 +33,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import dk.chen.garbagev1.R
 import dk.chen.garbagev1.domain.Item
-import dk.chen.garbagev1.domain.Bin
 import dk.chen.garbagev1.ui.components.BooleanProvider
-import dk.chen.garbagev1.ui.components.BinProvider
 import dk.chen.garbagev1.ui.components.GarbageTextField
 import dk.chen.garbagev1.ui.components.ThemedPreviews
 import dk.chen.garbagev1.ui.theme.theme.GarbageV1Theme
