@@ -6,37 +6,31 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dk.chen.garbagev1.ui.components.GarbageTopAppBar
+import dk.chen.garbagev1.ui.components.NavigationType
+import dk.chen.garbagev1.ui.navigation.AppRoute
 import dk.chen.garbagev1.ui.theme.theme.GarbageV1Theme
 import kotlinx.serialization.Serializable
+import dk.chen.garbagev1.R
+import dk.chen.garbagev1.ui.components.GarbageTextField
+import dk.chen.garbagev1.ui.components.ThemedPreviews
 
 @Serializable
-object AddWhat
+object AddWhat : AppRoute
 
 @Composable
 fun AddWhatScreen(
@@ -68,19 +62,10 @@ private fun AddWhatScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = "Add item: What") },
-                navigationIcon = {
-                    IconButton(onClick = uiEvents::onUpClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
+            GarbageTopAppBar(
+                titleRes = R.string.add_what_title,
+                navigationType = NavigationType.BACK,
+                onUpClick = uiEvents::onUpClick
             )
         }
     ) { paddingValues ->
@@ -91,36 +76,31 @@ private fun AddWhatScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val focusManager = LocalFocusManager.current
-
-            TextField(
+            GarbageTextField(
                 value = uiState.what,
                 onValueChange = uiEvents::onWhatChange,
-                label = { Text(text = "What") },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
-                isError = uiState.isError,
-                supportingText = {
-                    if (uiState.isError) {
-                        Text(text = "What cannot be empty")
-                    }
-                }
+                labelRes = R.string.what_label,
+                focusManager = LocalFocusManager.current,
+                isLastField = false,
+                isError = uiState.isError
             )
+
             Spacer(Modifier.height(height = 16.dp))
+
             Button(onClick = uiEvents::onNextClick) {
-                Text(text = "Next")
+                Text(text = stringResource(id = R.string.next_button_label))
             }
         }
     }
 }
 
-@Preview(showBackground = true)
+@ThemedPreviews
 @Composable
 fun AddWhatScreenPreview() {
     GarbageV1Theme {
         AddWhatScreen(
             modifier = Modifier,
-            uiState = AddWhatViewModel.UiState(what = "Milk"),
+            uiState = AddWhatViewModel.UiState(what = "Newspaper"),
             uiEvents = object : AddWhatViewModel.UiEvents {
                 override fun onWhatChange(what: String) {}
                 override fun onNextClick() {}

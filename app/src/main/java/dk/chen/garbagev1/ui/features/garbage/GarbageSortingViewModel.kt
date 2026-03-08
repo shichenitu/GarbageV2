@@ -30,6 +30,7 @@ class GarbageSortingViewModel @Inject constructor (
 ) : ViewModel() {
     sealed class NavigationEvent {
         object NavigateToList : NavigationEvent()
+        object NavigateToAdd : NavigationEvent()
     }
 
     private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
@@ -107,6 +108,12 @@ class GarbageSortingViewModel @Inject constructor (
                 _navigationEvents.emit(NavigationEvent.NavigateToList)
             }
         }
+
+        override fun onAddItemClick() {
+            viewModelScope.launch {
+                _navigationEvents.emit(NavigationEvent.NavigateToAdd)
+            }
+        }
     }
 
     data class UiState(
@@ -114,7 +121,8 @@ class GarbageSortingViewModel @Inject constructor (
         val displaySortingList: Boolean = false,
         val itemWhat: String = "",
         val itemWhere: String = "",
-        @get:StringRes val toggleListVisibilityButtonLabel: Int = R.string.show_sorting_list_label
+        @get:StringRes val toggleListVisibilityButtonLabel: Int = R.string.show_sorting_list_label,
+        val isError: Boolean = false
     )
 
     @Immutable
@@ -124,5 +132,6 @@ class GarbageSortingViewModel @Inject constructor (
         fun onToggleListVisibilityClick()
         fun onWhatChange(newValue: String)
         fun onWhereChange(newValue: String)
+        fun onAddItemClick()
     }
 }

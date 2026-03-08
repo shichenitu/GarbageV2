@@ -9,17 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -36,6 +32,9 @@ import dk.chen.garbagev1.domain.Item
 import dk.chen.garbagev1.R
 import dk.chen.garbagev1.ui.theme.theme.GarbageV1Theme
 import dk.chen.garbagev1.domain.fullDescription
+import dk.chen.garbagev1.ui.components.GarbageTopAppBar
+import dk.chen.garbagev1.ui.components.GarbageTextField
+import dk.chen.garbagev1.ui.components.NavigationType
 
 @Composable
 fun GarbageSortingScreen(
@@ -54,7 +53,8 @@ fun GarbageSortingScreen(
     GarbageSortingScreen(
         modifier = modifier,
         uiState = uiState,
-        uiEvents = viewModel.uiEvents)
+        uiEvents = viewModel.uiEvents
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,11 +68,9 @@ private fun GarbageSortingScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.app_name)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
+            GarbageTopAppBar(
+                titleRes = R.string.app_name,
+                navigationType = NavigationType.NONE
             )
         }
     ) { innerPadding ->
@@ -85,22 +83,28 @@ private fun GarbageSortingScreen(
         ) {
 
             item {
-                TextField(
+                GarbageTextField(
                     value = uiState.itemWhat,
-                    onValueChange = { uiEvents.onWhatChange(it) },
-                    label = { Text(text = stringResource(id = R.string.garbage_item_label)) },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
+                    onValueChange = uiEvents::onWhatChange,
+                    labelRes = R.string.what_label,
+                    focusManager = LocalFocusManager.current,
+                    isLastField = false,
+                    isError = uiState.isError
                 )
             }
 
             item {
                 if (uiState.itemWhere.isNotEmpty()) {
-                    Text(
-                        text = uiState.itemWhere,
-                        style = typography.bodyLarge,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
+                    Card(
+                        modifier = Modifier.padding(vertical = 16.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                    ) {
+                        Text(
+                            text = uiState.itemWhere,
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
                 }
             }
 
@@ -117,7 +121,6 @@ private fun GarbageSortingScreen(
 
                 uiState.sortingList.forEach { item ->
                     item {
-
                         Text(
                             text = item.fullDescription(),
                             modifier = Modifier.clickable { uiEvents.onRemoveItemClick(item) }
@@ -127,7 +130,10 @@ private fun GarbageSortingScreen(
             }
 
             item {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
                     Button(onClick = {
                         uiEvents.onSearchClick(itemWhat = uiState.itemWhat)
                         focusManager.clearFocus()
@@ -157,6 +163,7 @@ fun GarbageSortingScreenPreview() {
                 override fun onToggleListVisibilityClick() {}
                 override fun onWhatChange(newValue: String) {}
                 override fun onWhereChange(newValue: String) {}
+                override fun onAddItemClick() {}
             }
         )
     }

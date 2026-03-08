@@ -18,5 +18,5 @@ abstract class DataBindingsModule {
 
     @Singleton
     @Binds
-    abstract fun bindBinRepository(impl: ItemRepositoryImpl): BinRepository
+    abstract fun bindBinRepository(impl: BinRepositoryImpl): BinRepository
 }
