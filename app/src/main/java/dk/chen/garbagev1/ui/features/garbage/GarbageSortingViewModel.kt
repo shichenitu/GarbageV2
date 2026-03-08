@@ -30,6 +30,7 @@ class GarbageSortingViewModel @Inject constructor (
 ) : ViewModel() {
     sealed class NavigationEvent {
         object NavigateToList : NavigationEvent()
+        object NavigateToAdd : NavigationEvent()
     }
 
     private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
@@ -109,6 +110,9 @@ class GarbageSortingViewModel @Inject constructor (
         }
 
         override fun onAddItemClick() {
+            viewModelScope.launch {
+                _navigationEvents.emit(NavigationEvent.NavigateToAdd)
+            }
         }
     }
 
