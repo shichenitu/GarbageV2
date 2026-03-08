@@ -114,7 +114,8 @@ class GarbageSortingViewModel @Inject constructor (
         val displaySortingList: Boolean = false,
         val itemWhat: String = "",
         val itemWhere: String = "",
-        @get:StringRes val toggleListVisibilityButtonLabel: Int = R.string.show_sorting_list_label
+        @get:StringRes val toggleListVisibilityButtonLabel: Int = R.string.show_sorting_list_label,
+        val isError: Boolean = false
     )
 
     @Immutable
