@@ -139,13 +139,13 @@ private fun ListItem(item: Item, imageUrl: String?, binColor: Color?, onItemClic
         ) {
             Column(modifier = Modifier.weight(weight = 1f)) {
                 Text(
-                    text = item.what,
+                    text = item.what.replaceFirstChar { it.uppercase() },
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     color = binColor ?: MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = item.where,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    text = "${item.what} should be placed in ${item.where}",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Thin),
                     color = binColor ?: MaterialTheme.colorScheme.onSurface
                 )
             }
