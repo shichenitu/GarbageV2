@@ -107,6 +107,9 @@ class GarbageSortingViewModel @Inject constructor (
                 _navigationEvents.emit(NavigationEvent.NavigateToList)
             }
         }
+
+        override fun onAddItemClick() {
+        }
     }
 
     data class UiState(
