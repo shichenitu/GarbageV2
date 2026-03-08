@@ -31,10 +31,13 @@ import dk.chen.garbagev1.ui.features.garbage.AddWhatViewModel
 import dk.chen.garbagev1.ui.features.garbage.AddWhere
 import dk.chen.garbagev1.ui.features.garbage.AddWhereScreen
 import dk.chen.garbagev1.ui.features.garbage.AddWhereViewModel
+import dk.chen.garbagev1.ui.features.garbage.GarbageGraph
 import dk.chen.garbagev1.ui.features.garbage.GarbageListScreen
 import dk.chen.garbagev1.ui.features.garbage.GarbageListViewModel
-import dk.chen.garbagev1.ui.features.garbage.GarbageSearch
+import dk.chen.garbagev1.ui.features.garbage.GarbageSortingScreen
+import dk.chen.garbagev1.ui.features.garbage.GarbageSortingViewModel
 import dk.chen.garbagev1.ui.features.garbage.SortingList
+import dk.chen.garbagev1.ui.features.garbage.SortingSearch
 import dk.chen.garbagev1.ui.features.recycling.Bins
 import dk.chen.garbagev1.ui.features.recycling.RecyclingScreen
 import dk.chen.garbagev1.ui.features.settings.Settings
@@ -92,12 +95,26 @@ fun MainNavigation(modifier: Modifier = Modifier) {
 
 
 fun NavGraphBuilder.garbageNavGraph(navController: NavHostController) {
-
     val singleTopNavOptions: NavOptions = navOptions {
         launchSingleTop = true
     }
 
-    navigation<GarbageSearch>(startDestination = SortingList()) {
+    navigation<GarbageGraph>(startDestination = SortingSearch) {
+        composable<SortingSearch>{
+            GarbageSortingScreen(
+                onNavigate = { event ->
+                    when (event) {
+                        is GarbageSortingViewModel.NavigationEvent.NavigateToList -> {
+                            navController.navigate(SortingList())
+                        }
+                        is GarbageSortingViewModel.NavigationEvent.NavigateToAdd -> {
+                            navController.navigate(AddWhat)
+                        }
+                    }
+                }
+            )
+        }
+
         composable<SortingList>(
             deepLinks = listOf(
                 navDeepLink { uriPattern = "garbage://items/{itemId}" }
@@ -167,7 +184,7 @@ fun NavGraphBuilder.garbageNavGraph(navController: NavHostController) {
                     is AddWhereViewModel.NavigationEvent.NavigateToGarbageList -> navController.navigate(
                         route = SortingList(),
                         navOptions = navOptions {
-                            popUpTo(route = GarbageSearch)
+                            popUpTo(route = GarbageGraph)
                         }
                     )
                 }
