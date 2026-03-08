@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.RestoreFromTrash
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import dk.chen.garbagev1.R
-import dk.chen.garbagev1.ui.features.garbage.GarbageSearch
+import dk.chen.garbagev1.ui.features.garbage.GarbageGraph
 import dk.chen.garbagev1.ui.features.recycling.Bins
 import dk.chen.garbagev1.ui.features.settings.Settings
 
@@ -22,7 +22,7 @@ sealed class BottomNavigation(
     val icon: ImageVector
 ) {
     data object GarbageTab : BottomNavigation(
-        route = GarbageSearch,
+        route = GarbageGraph,
         title = R.string.garbage_screen_title,
         icon = Icons.Default.RestoreFromTrash
     )

@@ -46,11 +46,15 @@ import dk.chen.garbagev1.ui.navigation.NestedGraph
 import dk.chen.garbagev1.ui.theme.theme.GarbageV1Theme
 import kotlinx.serialization.Serializable
 
+
 @Serializable
-object GarbageSearch : NestedGraph {
+object GarbageGraph : NestedGraph {
     override val startDestination: AppRoute
-        get() = SortingList()
+        get() = SortingSearch
 }
+
+@Serializable
+object SortingSearch : AppRoute
 
 @Serializable
 data class SortingList(val itemId: String? = null) : AppRoute
@@ -145,7 +149,7 @@ private fun ListItem(item: Item, imageUrl: String?, binColor: Color?, onItemClic
                 )
                 Text(
                     text = "${item.what} should be placed in ${item.where}",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Thin),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Thin),
                     color = binColor ?: MaterialTheme.colorScheme.onSurface
                 )
             }
