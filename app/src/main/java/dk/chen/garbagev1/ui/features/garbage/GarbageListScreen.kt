@@ -88,7 +88,8 @@ private fun GarbageListScreen(
         topBar = {
             GarbageTopAppBar(
                 titleRes = R.string.app_name,
-                navigationType = NavigationType.NONE
+                navigationType = NavigationType.BACK,
+                onUpClick = uiEvents::onUpClick
             )
         },
         floatingActionButton = {
