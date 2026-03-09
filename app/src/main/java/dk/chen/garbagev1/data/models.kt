@@ -5,6 +5,8 @@ import dk.chen.garbagev1.domain.Item
 import dk.chen.garbagev1.domain.Bin
 import java.util.UUID
 import androidx.core.graphics.toColorInt
+import dk.chen.garbagev1.data.database.ItemEntity
+import dk.chen.garbagev1.data.database.BinEntity
 
 data class ItemDto(
     val id: String = UUID.randomUUID().toString(),
@@ -18,7 +20,26 @@ data class BinDto(
     val binColor: String
 )
 
-fun ItemDto.toItem(): Item = Item(id = this.id, what = this.what, where = this.where)
-fun BinDto.toBin(): Bin = Bin(name = this.name, imageUrl = this.imageUrl, binColor = Color(
-    color = this.binColor.toColorInt()
-))
+fun BinDto.toBin(): Bin = Bin(
+    name = this.name, imageUrl = this.imageUrl, binColor = Color(
+        color = this.binColor.toColorInt()
+    )
+)
+
+fun ItemDto.toItem(): Item = Item(
+    id = this.id,
+    what = this.what,
+    where = this.where
+)
+
+fun ItemEntity.toItemDto() = ItemDto(
+    id = id,
+    what = what,
+    where = where
+)
+
+fun BinEntity.toBinDto() = BinDto(
+    name = name,
+    imageUrl = imageUrl,
+    binColor = binColor
+)
