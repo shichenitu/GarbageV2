@@ -55,6 +55,81 @@ abstract class GarbageDatabase : RoomDatabase() {
                     id = UUID.randomUUID().toString(),
                     what = "Cabbage",
                     where = "Food Waste",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "magazine",
+                    where = "paper",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "milk carton",
+                    where = "plastic",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "teddy bears",
+                    where = "daily waste",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "musical instrument",
+                    where = "wood",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "carpets",
+                    where = "bulky waste",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "chips bag",
+                    where = "other",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "paint",
+                    where = "chemical",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "printer",
+                    where = "electronics",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "shoe box",
+                    where = "cardboard",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "jars",
+                    where = "glass",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "jeans",
+                    where = "Textile Waste",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "sofa",
+                    where = "Bulky Waste",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "letter",
+                    where = "paper",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "clothes",
+                    where = "other",
+                ),
+                ItemDto(
+                    id = UUID.randomUUID().toString(),
+                    what = "flower pot (plastic)",
+                    where = "daily waste",
                 )
             )
             initialItems.forEach {
@@ -72,11 +147,6 @@ abstract class GarbageDatabase : RoomDatabase() {
         private suspend fun prepopulateBins() {
             val binDao = binDaoProvider.get()
             val initialBins = listOf(
-                BinDto(
-                    name = "Food",
-                    imageUrl = "https://cdn.prod.website-files.com/633fd4b071f8f56baf6d88c9/633fd4b071f8f5c4166d8a01_MADAFFALD_rgb_72dpi.jpg",
-                    binColor = "#00a04b"
-                ),
                 BinDto(
                     name = "Plastic",
                     imageUrl = "https://cdn.prod.website-files.com/633fd4b071f8f56baf6d88c9/633fd4b071f8f5d2a86d8a04_PLAST_rgb_72dpi.jpg",
