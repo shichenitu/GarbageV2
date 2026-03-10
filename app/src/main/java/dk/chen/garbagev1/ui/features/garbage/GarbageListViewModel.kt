@@ -39,7 +39,7 @@ class GarbageListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             combine(
-                flow = itemRepository.getSortingList(),
+                flow = itemRepository.getGarbageList(),
                 flow2 = binRepository.getBins()
             ) { garbageList, bins ->
                 _uiState.update { it.copy(garbageList = garbageList, bins = bins) }
@@ -65,12 +65,6 @@ class GarbageListViewModel @Inject constructor(
             _uiState.update { it.copy(selectedItem = item) }
         }
 
-        override fun onUpClick() {
-            viewModelScope.launch {
-                _navigationEvents.emit(value = NavigationEvent.NavigateUp)
-            }
-        }
-
         override fun onWhatChange(what: String) {
             _uiState.update { it.copy(selectedItem = it.selectedItem?.copy(what = what)) }
         }
@@ -79,13 +73,21 @@ class GarbageListViewModel @Inject constructor(
             _uiState.update { it.copy(selectedItem = it.selectedItem?.copy(where = where)) }
         }
 
+        override fun onUpClick() {
+            viewModelScope.launch {
+                _navigationEvents.emit(value = NavigationEvent.NavigateUp)
+            }
+        }
+
         override fun onSaveClick(): Boolean {
             val item = _uiState.value.selectedItem ?: return true
 
             when {
                 item.what.isNotBlank() && item.where.isNotBlank() -> {
                     _uiState.update { it.copy(isWhatError = false, isWhereError = false) }
-                    itemRepository.updateItem(item = item)
+                    viewModelScope.launch {
+                        itemRepository.updateItem(item = item)
+                    }
                     onDismissDetails()
                     return true
                 }
@@ -93,10 +95,20 @@ class GarbageListViewModel @Inject constructor(
                 item.what.isBlank() && item.where.isBlank() ->
                     _uiState.update { it.copy(isWhatError = true, isWhereError = true) }
 
-                item.what.isBlank() -> _uiState.update { it.copy(isWhatError = true, isWhereError = false) }
-                item.where.isBlank() -> _uiState.update { it.copy(isWhatError = false, isWhereError = true) }
-            }
+                item.what.isBlank() -> _uiState.update {
+                    it.copy(
+                        isWhatError = true,
+                        isWhereError = false
+                    )
+                }
 
+                item.where.isBlank() -> _uiState.update {
+                    it.copy(
+                        isWhatError = false,
+                        isWhereError = true
+                    )
+                }
+            }
             return false
         }
 
@@ -107,7 +119,9 @@ class GarbageListViewModel @Inject constructor(
 
         override fun onConfirmDelete() {
             _uiState.value.selectedItem?.let { item ->
-                itemRepository.removeItem(item)
+                viewModelScope.launch {
+                    itemRepository.removeItem(item)
+                }
             }
             onDismissDetails()
         }
